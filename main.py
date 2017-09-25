@@ -1,17 +1,16 @@
 #create global variable for count
 #create global dict? read in as id then change based on func
 
-#! /usr/bin/python
-import sys
 
+import sys
+count = 0
 varDict = {}
 
 
-lex(){
-}
-match(){
-	
-}
+class lex():
+
+class match(token)	
+	if(
 prog(){
 }
 letInEnd(){
@@ -37,14 +36,12 @@ factor(){
 }
 
 
-main(){
-	file = open(sys.argv[1],"r")
-	
-	for v in file.read().split():
-			
-}
 
+file = open(sys.argv[1],"r")
+lines = file.read().split()
 
+for v in lines:
+	print lines[count]
+	count += 1
+				
 
-
-	
