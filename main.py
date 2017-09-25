@@ -4,9 +4,9 @@
 
 import sys
 count = 0
-varDict = {}
+list = []
 
-
+'''
 class lex():
 
 class match(token)	
@@ -35,13 +35,18 @@ factor(){
 	elif
 }
 
-
-
-file = open(sys.argv[1],"r")
-lines = file.read().split()
-
-for v in lines:
-	print lines[count]
+'''
+def match():
+	global count
 	count += 1
+def read():
+	file = open(sys.argv[1],"r")
+	global list
+	list = file.read().split()
+
+read()
+for v in list:
+	print list[count]
+	match()
 				
 
