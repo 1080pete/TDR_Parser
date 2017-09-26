@@ -4,15 +4,13 @@
 
 import sys
 count = 0
-list = []
+tokList = []
 
 '''
 class lex():
 
 class match(token)	
 	if(
-prog(){
-}
 letInEnd(){
 }
 declList(){
@@ -36,17 +34,27 @@ factor(){
 }
 
 '''
+def prog():
+	letInEnd()
+
+
+
+
 def match():
 	global count
 	count += 1
 def read():
 	file = open(sys.argv[1],"r")
-	global list
-	list = file.read().split()
+	global tokList
+	tokList = file.read().split()
+def main():
 
-read()
-for v in list:
-	print list[count]
-	match()
+	global tokList
+	read()
+	
+	for v in tokList:
+		print tokList[count]
+		match()
 				
-
+if __name__=="__main__":
+	main()
