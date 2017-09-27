@@ -28,49 +28,62 @@ factor(){
 
 '''
 def prog():
-	lex()
-	letInEnd()
+    lex()
+    letInEnd()
 
 def letInEnd():
-	while(index < len(tokList)-2):
-		if(nextTok == "let"):
-			match(nextTok)
-			decList()
-		elif(nextTok == "in"):
-			match(nextTok)
-			#type()
-		else:
-			lex()		
+    while(index < len(tokList)-2):
+	if(nextTok == "let"):
+		match(nextTok)
+		decList()
+	elif(nextTok == "in"):
+		match(nextTok)
+		#type()
+	else:
+		lex()		
 			
 def decList():
-	dec()
+    while (nextTok != "in"):
+        dec()
+    return
 
 def dec():
-	global varDict
+    global varDict
 	
-	varType,varVal = None,None
-	var = nextTok
+    varType,varVal = None,None
+    var = nextTok
 
+    match(nextTok)
+    if(nextTok ==":"):
 	match(nextTok)
-	if(nextTok ==":"):
-		match(nextTok)
-		varType = type()
-	print varType
-	if(nextTok=="="):
-		print "test"
-		match(nextTok)
+	varType = type()
+        varVal = expr()
+        #print "varType\t",varType
+        #print "varVal\t",varVal
+        varDict[var] = (varType,varVal)
 
 def type():
-	tok = tokList[index]
+    tok = tokList[index]
 	
-	if(tok=="int" or tok=="real"):
-		lex()
-		return tok
-	else:
-		return -1	
+    if(tok=="int" or tok=="real"):
+        match(tok)	
+	return tok
+    else:
+    	return -1	
 
 def expr():
-	
+    retExpr = term()
+    print nextTok
+    return retExpr
+
+
+def term():
+    retTerm = factor()
+    return retTerm
+
+def factor():
+    lex()
+    return nextTok
 
 
 	
@@ -80,24 +93,23 @@ def lex():
 	nextTok = tokList[index]
 
 def match(token):
-	if (nextTok == token):
-		lex()
-	else:
-		return -1
+    if (nextTok == token):
+    	lex()
+    else:
+	return -1
 	
 def read():
-	global tokList
+    global tokList
 
-	file = open(sys.argv[1],"r")
-	tokList = file.read().split()
+    file = open(sys.argv[1],"r")
+    tokList = file.read().split()
 	
 	
 	
 def main():
-	
-	read()
-	prog()
-	
+    read()
+    prog()
+    print varDict	
 			
 if __name__=="__main__":
-	main()
+    main()
