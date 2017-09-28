@@ -5,34 +5,17 @@
 import sys
 from IPython import embed
 
-index = -1
+tokIndex = -1
 nextTok = None
 tokList = []
 varDict = {}
 
-'''
-
-expr(){
-}
-term(){
-}
-factor(){
-}
-
-factor(){
-	lex();
-	if(nextToken=="id"){
-	}
-	elif
-}
-
-'''
 def prog():
     lex()
     letInEnd()
 
 def letInEnd():
-    while(index < len(tokList)-2):
+    while(tokIndex < len(tokList)-2):
 	if(nextTok == "let"):
 		match(nextTok)
 		decList()
@@ -63,7 +46,7 @@ def dec():
         varDict[var] = (varType,varVal)
 
 def type():
-    tok = tokList[index]
+    tok = tokList[tokIndex]
 	
     if(tok=="int" or tok=="real"):
         match(tok)	
@@ -88,9 +71,9 @@ def factor():
 
 	
 def lex():
-	global index, nextTok
-	index+=1
-	nextTok = tokList[index]
+	global tokIndex, nextTok
+	tokIndex+=1
+	nextTok = tokList[tokIndex]
 
 def match(token):
     if (nextTok == token):
