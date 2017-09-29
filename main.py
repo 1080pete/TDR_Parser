@@ -15,13 +15,16 @@ def prog():
     letInEnd()
 
 def letInEnd():
+    varTypeCheck = None
+
     while(tokIndex < len(tokList)-2):
 	if(nextTok == "let"):
 		match(nextTok)
 		decList()
 	elif(nextTok == "in"):
 		match(nextTok)
-		#type()
+		varTypeCheck = type()
+                #print varTypeCheck
 	else:
 		lex()		
 			
@@ -31,8 +34,7 @@ def decList():
     return
 
 def dec():
-    global varDict
-	
+    global varDict	
     varType,varVal = None,None
     var = nextTok
 
@@ -40,9 +42,8 @@ def dec():
     if(nextTok ==":"):
 	match(nextTok)
 	varType = type()
+        match(nextTok)
         varVal = expr()
-        #print "varType\t",varType
-        #print "varVal\t",varVal
         varDict[var] = (varType,varVal)
 
 def type():
@@ -52,21 +53,46 @@ def type():
         match(tok)	
 	return tok
     else:
-    	return -1	
+        sys.exit('Error')
 
 def expr():
-    retExpr = term()
-    print nextTok
-    return retExpr
+    leftTerm = float(term())
+    rightTerm = None
+    print "leftTerm:\t",leftTerm
+    print "nextTok:\t",nextTok
+    if(nextTok=="+"):
+        match(nextTok)
+        rightTerm = term()
+        leftTerm += float(rightTerm)
+        return leftTerm
+    elif(nextTok=="-"):
+        match(nextTok)
+        leftTerm += term()
+        return leftTerm
+    else:
+        return leftTerm
 
 
 def term():
-    retTerm = factor()
-    return retTerm
+    leftFactor = factor()
+    
+    match(nextTok)
+    if(nextTok=="*"):
+        match(nextTok)
+        leftFactor *= factor()
+    elif(nextTok=="/"):
+        match(nextTok)
+        leftFactor /= factor()
+    else:
+        return leftFactor
+
+
 
 def factor():
-    lex()
-    return nextTok
+    if(nextTok in varDict):
+        return varDict[nextTok][1]
+    else:
+        return nextTok
 
 
 	
@@ -79,7 +105,7 @@ def match(token):
     if (nextTok == token):
     	lex()
     else:
-	return -1
+	sys.exit('Error')
 	
 def read():
     global tokList

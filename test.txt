@@ -1,1 +1,1 @@
-let r : real = 10.0 ; pi : real = 3.1416 ; in real ( pi * r * r ) end ;
+let r : real = 10.0 ; pi : real = r + r ; in real ( pi * r * r ) end ; 
