@@ -1,4 +1,5 @@
 import sys
+import pdb;
 
 tokenList = []
 variableDict = {}
@@ -15,6 +16,8 @@ def let_in_end():
             dec_list()
         elif(nextTok=="in"):
             match(nextTok)
+            final = expr(type())
+            print final
         elif(nextTok=="end"):
             return
         else:
@@ -23,7 +26,6 @@ def let_in_end():
 def dec_list():
     while(nextTok != 'in'):
         dec()
-        print 'test'
     return
 
 def dec():
@@ -36,11 +38,9 @@ def dec():
         if(nextTok==':'):
             match(nextTok)
             varType = type()
-            print 'test :' 
         elif(nextTok=='='):
             match(nextTok)
             varVal = expr(varType)
-            print 'test ='
             
     variableDict[varName] = (varType,varVal)
     
@@ -59,16 +59,46 @@ def type():
 def expr(varType):
     #Add type into term
     retTerm = term(varType)
-    print nextTok
+    if(nextTok=='+'):
+        match(nextTok)
+        retTerm += term(varType)
+    elif(nextTok=='-'):
+        match(nextTok)
+        retTerm -= term(varType)
+
     return retTerm
 
 def term(varType):
     retFact = factor(varType)
+    if(nextTok=='*'):
+        match(nextTok)
+        rightFact = factor(varType)
+        retFact *= rightFact
+    elif(nextTok=='/'):
+        match(nextTok)
+        retFact /= factor(varType)
     return retFact
 
 def factor(varType):
-    retNum = nextTok
+    
+    if(nextTok=='('):
+        match(nextTok)
+        retNum=expr(varType)
+    elif(nextTok=='int' or nextTok=='real'):
+        varType=type()
+        #print "varType:\t",varType
+        #print "nextTok:\t",nextTok
+        retNum=expr(varType)
+    else:
+        retNum=nextTok
+    if(retNum in variableDict):
+        retNum = variableDict[retNum][1]
+    
     lex()
+    if(varType=='int'):
+        return int(retNum)
+    elif(varType=='real'):
+        return float(retNum)
     return retNum
 
 def match(token):
@@ -90,5 +120,6 @@ def main():
     tokenList = file.read().split()
     lex()
     prog()
+    print variableDict
 if __name__=="__main__":
     main()
