@@ -57,15 +57,20 @@ def type():
         sys.exit('Error')
 
 def expr(varType):
-    #Add type into term
+    #add a return dict/list such that return(var,varType)
+    if(nextTok in variableDict):
+        leftType = variableDict[nextTok][0]
+        print 'leftType:\t',leftType
     retTerm = term(varType)
     if(nextTok=='+'):
         match(nextTok)
+        rightType = variableDict[nextTok][0]
+        print 'rightType:\t',rightType
         retTerm += term(varType)
     elif(nextTok=='-'):
         match(nextTok)
         retTerm -= term(varType)
-
+    print '\n'
     return retTerm
 
 def term(varType):
