@@ -97,8 +97,10 @@ def factor(varType):
         retTup = (varType, exprCheck[1])
     elif(nextTok=='int' or nextTok=='real'):
         varType=type()
-        exprCheck = expr(varType) 
-        retTup = (varType, exprCheck)
+        if(nextTok=='('):
+            match(nextTok)
+            exprCheck = expr(varType) 
+            retTup = (varType, exprCheck[1])
     else:
         retTup = (varType, nextTok)
     lex()

@@ -1,1 +1,1 @@
-let x : int = 10 ; y : int = x + x ; in int ( ( y +  y ) * y  ) end ; 
+let x : int = 10 ; y : int = x + x ; z : real = 10 ; in int (  y + y  * int ( z )  ) end ; 
