@@ -53,7 +53,6 @@ def dec():
     #change this around
     #edit: swapped
     variableDict[varName] = (varVal[VAL], varType)
-    
     lex() 
     return
 
@@ -69,37 +68,47 @@ def type():
 def expr(varType):
     #initialize leftTerm
     leftTerm = term(varType)
-
     #check to see if there is a rightTerm and compute
     if(nextTok=='+'):
         match(nextTok)
         rightTerm = term(varType)
-        finalTerm = (varType, (leftTerm[VAL] + rightTerm[VAL]))
-        return finalTerm
+        if(leftTerm[TYPE] == rightTerm[TYPE]):
+            finalTerm = ((leftTerm[VAL] + rightTerm[VAL]), varType)
+            return finalTerm
+        else:
+            sys.exit('ERROR')
     elif(nextTok=='-'):
         match(nextTok)
         rightTerm = term(varType)
-        finalTerm = (varType, (leftTerm[VAL] - rightTerm[VAL]))
-        return finalTerm
+        if(leftTerm[TYPE] == rightTerm[TYPE]):
+            finalTerm = ((leftTerm[VAL] - rightTerm[VAL]), varType)
+            return finalTerm
+        else:
+            sys.exit('ERROR')
 
     return leftTerm
 
 def term(varType):
     #initialize leftFact
     leftFact = factor(varType)
-
     #check to see if there is a rightFact and compute
     if(nextTok=='*'):
         match(nextTok)
         rightFact = factor(varType)
-        finalFact = (varType, (leftFact[VAL] * rightFact[VAL]))
-        return finalFact
+        if(leftFact[TYPE] == rightFact[TYPE]):
+            finalFact = ((leftFact[VAL] * rightFact[VAL]), varType)
+            return finalFact
+        else:
+            sys.exit('ERROR')
+
     elif(nextTok=='/'):
         match(nextTok)
         rightFact = factor(varType)
-        finalFact = (varType, (leftFact[VAL] / rightFact[VAL]))
-        return finalFact
-
+        if(leftFact[TYPE] == rightFact[TYPE]):
+            finalFact = ((leftFact[VAL] / rightFact[VAL]), varType)
+            return finalFact
+        else:
+            sys.exit('ERROR')
     return leftFact
 
 def factor(varType):
@@ -111,13 +120,14 @@ def factor(varType):
     if(nextTok=='('):
         match(nextTok)
         exprCheck = expr(varType)
-        retTup = (exprCheck[1], varType)
+        retTup = (exprCheck[VAL], varType)
+        
     elif(nextTok=='int' or nextTok=='real'):
         varType=type()
         if(nextTok=='('):
             match(nextTok)
             exprCheck = expr(varType) 
-            retTup = (exprCheck[1], varType)
+            retTup = (exprCheck[VAL], varType)
     else:
         retTup = (nextTok, varType)
     lex()
@@ -136,7 +146,7 @@ def factor(varType):
 
     return retTup
     '''
-    print 'retTup:\t',retTup
+    
     #New:
     if(retTup[VAL] in variableDict):    
         if(retTup[TYPE]=='int'):
@@ -144,7 +154,7 @@ def factor(varType):
             finalTup = (int(variableDict[retTup[VAL]][VAL]), variableDict[retTup[VAL]][TYPE])
             return finalTup
         elif(retTup[TYPE]=='real'):
-            finalTup = (float(variableDict[retTup[VAL]][VAL]), variableDict[retTu[VAL]][TYPE])
+            finalTup = (float(variableDict[retTup[VAL]][VAL]), variableDict[retTup[VAL]][TYPE])
             return finalTup
     
     return retTup
@@ -154,6 +164,7 @@ def match(token):
         lex()
     else:
         sys.exit('Error')
+         
 
 #update nextTok and index counter
 def lex():
