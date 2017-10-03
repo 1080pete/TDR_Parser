@@ -27,7 +27,7 @@ def let_in_end():
             elif(progTup[TYPE] == 'real'):
                 final = (float(progTup[VAL]), progTup[TYPE])
             else:
-                sys.exit('ERROR')
+                sys.exit('ERROR1')
             print final
         elif(nextTok=="end"):
             return
@@ -69,7 +69,7 @@ def type():
         match(nextTok)
         return returnVal
     else:
-        sys.exit('Error')
+        sys.exit('ERROR2')
 
 def expr(varType):
     #initialize leftTerm
@@ -82,7 +82,7 @@ def expr(varType):
             finalTerm = ((leftTerm[VAL] + rightTerm[VAL]), varType)
             return finalTerm
         else:
-            sys.exit('ERROR')
+            sys.exit('ERROR3')
     elif(nextTok=='-'):
         match(nextTok)
         rightTerm = term(varType)
@@ -90,7 +90,7 @@ def expr(varType):
             finalTerm = ((leftTerm[VAL] - rightTerm[VAL]), varType)
             return finalTerm
         else:
-            sys.exit('ERROR')
+            sys.exit('ERROR4')
 
     return leftTerm
 
@@ -105,7 +105,7 @@ def term(varType):
             finalFact = ((leftFact[VAL] * rightFact[VAL]), varType)
             return finalFact
         else:
-            sys.exit('ERROR')
+            sys.exit('ERROR5')
 
     elif(nextTok=='/'):
         match(nextTok)
@@ -114,7 +114,7 @@ def term(varType):
             finalFact = ((leftFact[VAL] / rightFact[VAL]), varType)
             return finalFact
         else:
-            sys.exit('ERROR')
+            sys.exit('ERROR6')
     return leftFact
 
 def factor(varType):
@@ -125,6 +125,7 @@ def factor(varType):
     #check to see if nextTok is paranthesis or variable type
     if(nextTok=='('):
         match(nextTok)
+        #this is causing problems with variable type
         exprCheck = expr(varType)
         retTup = (exprCheck[VAL], varType)
         
@@ -169,7 +170,7 @@ def match(token):
     if(token==nextTok):
         lex()
     else:
-        sys.exit('Error')
+        sys.exit('ERROR7')
          
 
 #update nextTok and index counter
