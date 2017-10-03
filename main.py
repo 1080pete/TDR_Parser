@@ -1,124 +1,143 @@
-#create global variable for count
-#create global dict? read in as id then change based on func
-
-
 import sys
+import pdb;
 
-
-tokIndex = -1
+tokenList = []
+variableDict = {}
 nextTok = None
-tokList = []
-varDict = {}
+index = -1
+TYPE = 0
+VAL = 1
 
 def prog():
-    lex()
-    letInEnd()
+        let_in_end()
+    
+def let_in_end():
+    while(index < len(tokenList) - 2):
+        if(nextTok=="let"):
+            match(nextTok)
+            dec_list()
+        elif(nextTok=="in"):
+            match(nextTok)
+            final = expr(type())
+            print final
+        elif(nextTok=="end"):
+            return
+        else:
+            lex()
 
-def letInEnd():
-    varTypeCheck = None
-
-    while(tokIndex < len(tokList)-2):
-	if(nextTok == "let"):
-		match(nextTok)
-		decList()
-	elif(nextTok == "in"):
-		match(nextTok)
-		varTypeCheck = type()
-                #print varTypeCheck
-	else:
-		lex()		
-			
-def decList():
-    while (nextTok != "in"):
+def dec_list():
+    while(nextTok != 'in'):
         dec()
     return
 
 def dec():
-    global varDict	
+    global variableDict
     varType,varVal = None,None
-    var = nextTok
+    varName = nextTok
 
-    match(nextTok)
-    if(nextTok ==":"):
-	match(nextTok)
-	varType = type()
-        match(nextTok)
-        varVal = expr()
-        varDict[var] = (varType,varVal)
+    lex()
+    while(nextTok != ';'):
+        if(nextTok==':'):
+            match(nextTok)
+            varType = type()
+        elif(nextTok=='='):
+            match(nextTok)
+            varVal = expr(varType)
+            
+    variableDict[varName] = (varType,varVal[VAL])
+    
+    lex() 
+    return
+
 
 def type():
-    tok = tokList[tokIndex]
-	
-    if(tok=="int" or tok=="real"):
-        match(tok)	
-	return tok
+    if(nextTok == 'int' or 'real'):
+        returnVal = nextTok
+        match(nextTok)
+        return returnVal
     else:
         sys.exit('Error')
 
-def expr():
-    leftTerm = float(term())
-    rightTerm = None
-    print "leftTerm:\t",leftTerm
-    print "nextTok:\t",nextTok
-    if(nextTok=="+"):
+def expr(varType):
+    leftTerm = term(varType)
+
+    if(nextTok=='+'):
         match(nextTok)
-        rightTerm = term()
-        leftTerm += float(rightTerm)
-        return leftTerm
-    elif(nextTok=="-"):
+        rightTerm = term(varType)
+        finalTerm = (varType, (leftTerm[VAL] + rightTerm[VAL]))
+        return finalTerm
+    elif(nextTok=='-'):
         match(nextTok)
-        leftTerm += term()
-        return leftTerm
+        rightTerm = term(varType)
+        finalTerm = (varType, (leftTerm[VAL] - rightTerm[VAL]))
+        return finalTerm
+
+    return leftTerm
+
+def term(varType):
+    #print 'before:\t\t\t',nextTok
+    leftFact = factor(varType)
+    #print 'after:\t\t\t',nextTok
+    #print leftFact
+    if(nextTok=='*'):
+        match(nextTok)
+        rightFact = factor(varType)
+        #print rightFact
+        #print leftFact
+        finalFact = (varType, (leftFact[VAL] * rightFact[VAL]))
+        return finalFact
+    elif(nextTok=='/'):
+        match(nextTok)
+        rightFact = factor(varType)
+        finalFact = (varType, (leftFact[VAL] / rightFact[VAL]))
+        return finalFact
+
+    return leftFact
+
+def factor(varType):
+    exprCheck = None
+    retTup = ()
+    if(nextTok=='('):
+        match(nextTok)
+        exprCheck = expr(varType)
+        retTup = (varType, exprCheck[1])
+    elif(nextTok=='int' or nextTok=='real'):
+        varType=type()
+        exprCheck = expr(varType) 
+        retTup = (varType, exprCheck)
     else:
-        return leftTerm
+        retTup = (varType, nextTok)
+    lex()
 
-
-def term():
-    leftFactor = factor()
-    
-    match(nextTok)
-    if(nextTok=="*"):
-        match(nextTok)
-        leftFactor *= factor()
-    elif(nextTok=="/"):
-        match(nextTok)
-        leftFactor /= factor()
-    else:
-        return leftFactor
-
-
-
-def factor():
-    if(nextTok in varDict):
-        return varDict[nextTok][1]
-    else:
-        return nextTok
-
-
-	
-def lex():
-	global tokIndex, nextTok
-	tokIndex+=1
-	nextTok = tokList[tokIndex]
+    if(exprCheck[0] in variableDict):
+        if(retTup[TYPE]=='int'):
+            finalTup = (varType, int(variableDict[retTup[VAL]][VAL]))
+            print finalTup
+            return finalTup
+        elif(retTup[TYPE]=='real'):
+            finalTup = (varType, float(variableDict[retTup[VAL]][VAL]))
+            return finalTup
+    return retTup
 
 def match(token):
-    if (nextTok == token):
-    	lex()
+    if(token==nextTok):
+        lex()
     else:
-	sys.exit('Error')
-	
-def read():
-    global tokList
+        sys.exit('Error')
 
-    file = open(sys.argv[1],"r")
-    tokList = file.read().split()
-	
-	
-	
+
+def lex():
+    global index, nextTok
+
+    index += 1
+    nextTok = tokenList[index]
+
 def main():
-    read()
+    global tokenList
+    file = open(sys.argv[1],'r')
+    tokenList = file.read().split()
+    lex()
     prog()
-    print varDict	
-			
+    print variableDict
 if __name__=="__main__":
     main()
