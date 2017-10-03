@@ -3,7 +3,6 @@
 
 
 import sys
-from IPython import embed
 
 tokIndex = -1
 nextTok = None

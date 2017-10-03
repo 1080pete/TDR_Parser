@@ -95,6 +95,7 @@ def term(varType):
     return leftFact
 
 def factor(varType):
+    from IPython import embed; embed()
     exprCheck = None
     retTup = ()
     if(nextTok=='('):
