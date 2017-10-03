@@ -63,41 +63,41 @@ def type():
 
 def expr(varType):
     #initialize leftTerm
-    leftTerm = term(varType)
+    leftTerm = term()
 
     #check to see if there is a rightTerm and compute
     if(nextTok=='+'):
         match(nextTok)
-        rightTerm = term(varType)
+        rightTerm = term()
         finalTerm = (varType, (leftTerm[VAL] + rightTerm[VAL]))
         return finalTerm
     elif(nextTok=='-'):
         match(nextTok)
-        rightTerm = term(varType)
+        rightTerm = term()
         finalTerm = (varType, (leftTerm[VAL] - rightTerm[VAL]))
         return finalTerm
 
     return leftTerm
 
-def term(varType):
+def term():
     #initialize leftFact
-    leftFact = factor(varType)
+    leftFact = factor()
 
     #check to see if there is a rightFact and compute
     if(nextTok=='*'):
         match(nextTok)
-        rightFact = factor(varType)
+        rightFact = factor()
         finalFact = (varType, (leftFact[VAL] * rightFact[VAL]))
         return finalFact
     elif(nextTok=='/'):
         match(nextTok)
-        rightFact = factor(varType)
+        rightFact = factor()
         finalFact = (varType, (leftFact[VAL] / rightFact[VAL]))
         return finalFact
 
     return leftFact
 
-def factor(varType):
+def factor():
     #initialize retTup 
     retTup = ()
 
