@@ -59,37 +59,37 @@ def type():
         sys.exit('Error')
 
 def expr(varType):
-    leftTerm = term(varType)
+    leftTerm = term()
 
     if(nextTok=='+'):
         match(nextTok)
-        rightTerm = term(varType)
+        rightTerm = term()
         finalTerm = (varType, (leftTerm[VAL] + rightTerm[VAL]))
         return finalTerm
     elif(nextTok=='-'):
         match(nextTok)
-        rightTerm = term(varType)
+        rightTerm = term()
         finalTerm = (varType, (leftTerm[VAL] - rightTerm[VAL]))
         return finalTerm
 
     return leftTerm
 
-def term(varType):
-    leftFact = factor(varType)
+def term():
+    leftFact = factor()
     if(nextTok=='*'):
         match(nextTok)
-        rightFact = factor(varType)
+        rightFact = factor()
         finalFact = (varType, (leftFact[VAL] * rightFact[VAL]))
         return finalFact
     elif(nextTok=='/'):
         match(nextTok)
-        rightFact = factor(varType)
+        rightFact = factor()
         finalFact = (varType, (leftFact[VAL] / rightFact[VAL]))
         return finalFact
 
     return leftFact
 
-def factor(varType):
+def factor():
     retTup = ()
     if(nextTok=='('):
         match(nextTok)
