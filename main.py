@@ -30,12 +30,15 @@ def dec_list():
         dec()
     return
 
+#
 def dec():
     global variableDict
     varType,varVal = None,None
     varName = nextTok
 
     lex()
+
+    #read through declerations and insert them into variableDict with VAL and varType
     while(nextTok != ';'):
         if(nextTok==':'):
             match(nextTok)
@@ -49,7 +52,7 @@ def dec():
     lex() 
     return
 
-
+#type check method, return type if 'int' or 'real', return error ifelse 
 def type():
     if(nextTok == 'int' or 'real'):
         returnVal = nextTok
@@ -59,8 +62,10 @@ def type():
         sys.exit('Error')
 
 def expr(varType):
+    #initialize leftTerm
     leftTerm = term(varType)
 
+    #check to see if there is a rightTerm and compute
     if(nextTok=='+'):
         match(nextTok)
         rightTerm = term(varType)
@@ -75,7 +80,10 @@ def expr(varType):
     return leftTerm
 
 def term(varType):
+    #initialize leftFact
     leftFact = factor(varType)
+
+    #check to see if there is a rightFact and compute
     if(nextTok=='*'):
         match(nextTok)
         rightFact = factor(varType)
@@ -90,7 +98,10 @@ def term(varType):
     return leftFact
 
 def factor(varType):
+    #initialize retTup 
     retTup = ()
+
+    #check to see if nextTok is paranthesis or variable type
     if(nextTok=='('):
         match(nextTok)
         exprCheck = expr(varType)
@@ -105,7 +116,7 @@ def factor(varType):
         retTup = (varType, nextTok)
     lex()
 
-    
+    #if factor has a stored value, convert value and return value and varType
     if(retTup[TYPE]=='int'):
         if(retTup[VAL] in variableDict):
             finalTup = (varType, int(variableDict[retTup[VAL]][VAL]))
@@ -118,19 +129,21 @@ def factor(varType):
 
     return retTup
 
+#match to see if nextTok is correct, if not print error
 def match(token):
     if(token==nextTok):
         lex()
     else:
         sys.exit('Error')
 
-
+#update nextTok and index counter
 def lex():
     global index, nextTok
 
     index += 1
     nextTok = tokenList[index]
 
+#initialze program
 def main():
     global tokenList
     file = open('test.txt','r')
