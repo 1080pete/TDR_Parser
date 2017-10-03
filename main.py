@@ -1,4 +1,5 @@
 import sys
+import pdb
 
 tokenList = []
 variableDict = {}
@@ -74,15 +75,10 @@ def expr(varType):
     return leftTerm
 
 def term(varType):
-    #print 'before:\t\t\t',nextTok
     leftFact = factor(varType)
-    #print 'after:\t\t\t',nextTok
-    #print leftFact
     if(nextTok=='*'):
         match(nextTok)
         rightFact = factor(varType)
-        #print rightFact
-        #print leftFact
         finalFact = (varType, (leftFact[VAL] * rightFact[VAL]))
         return finalFact
     elif(nextTok=='/'):
@@ -94,7 +90,6 @@ def term(varType):
     return leftFact
 
 def factor(varType):
-    exprCheck = None
     retTup = ()
     if(nextTok=='('):
         match(nextTok)
@@ -108,14 +103,17 @@ def factor(varType):
         retTup = (varType, nextTok)
     lex()
 
-    if(exprCheck[0] in variableDict):
-        if(retTup[TYPE]=='int'):
+    
+    if(retTup[TYPE]=='int'):
+        if(retTup[VAL] in variableDict):
             finalTup = (varType, int(variableDict[retTup[VAL]][VAL]))
             print finalTup
             return finalTup
-        elif(retTup[TYPE]=='real'):
+    elif(retTup[TYPE]=='real'):
+        if(retTup[VAL] in variableDict):
             finalTup = (varType, float(variableDict[retTup[VAL]][VAL]))
             return finalTup
+
     return retTup
 
 def match(token):
@@ -133,7 +131,7 @@ def lex():
 
 def main():
     global tokenList
-    file = open(sys.argv[1],'r')
+    file = open('test.txt','r')
     tokenList = file.read().split()
     lex()
     prog()
