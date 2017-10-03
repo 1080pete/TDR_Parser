@@ -21,7 +21,13 @@ def let_in_end():
             dec_list()
         elif(nextTok=="in"):
             match(nextTok)
-            final = expr(type())
+            progTup = expr(type())
+            if(progTup[TYPE] == 'int'):
+                final = (int(progTup[VAL]), progTup[TYPE])
+            elif(progTup[TYPE] == 'real'):
+                final = (float(progTup[VAL]), progTup[TYPE])
+            else:
+                sys.exit('ERROR')
             print final
         elif(nextTok=="end"):
             return
