@@ -1,3 +1,5 @@
+#check to see if assigned value to variable is the correct
+
 import sys
 import pdb
 
@@ -135,6 +137,7 @@ def factor(varType):
             match(nextTok)
             exprCheck = expr(varType) 
             retTup = (exprCheck[VAL], varType)
+            print 'retTup:\t',retTup
     else:
         retTup = (nextTok, varType)
     lex()
