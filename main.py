@@ -30,9 +30,7 @@ def let_in_end():
                 final = (float(progTup[VAL]), progTup[TYPE])
             else:
                 sys.exit('ERROR1')
-            print final
-        elif(nextTok=="end"):
-            return
+            print final[VAL]
         else:
             lex()
 
@@ -58,8 +56,22 @@ def dec():
             match(nextTok)
             varVal = expr(varType)
 
-    #change this around
-    #edit: swapped
+
+    #Check to see if assigned type is cast right
+    '''
+    if(varType == 'int'):
+        if(isinstance(int(varVal, int) == True):
+            variableDict[varName] = (varVal[VAL], varType)
+        else:
+            sys.exit('ERROR INT')
+    elif(varType == 'real'):
+        if(isinstance(varType,float) == True):
+            variableDict[varName] = (varVal[VAL], varType)
+        else:
+            sys.exit('ERROR REAL')
+    '''
+  
+   
     variableDict[varName] = (varVal[VAL], varType)
     lex() 
     return
@@ -81,7 +93,7 @@ def expr(varType):
         match(nextTok)
         rightTerm = term(varType)
         if(leftTerm[TYPE] == rightTerm[TYPE]):
-            finalTerm = ((leftTerm[VAL] + rightTerm[VAL]), varType)
+            finalTerm = ((leftTerm[VAL] + rightTerm[VAL]), leftTerm[TYPE])
             return finalTerm
         else:
             sys.exit('ERROR3')
@@ -89,7 +101,7 @@ def expr(varType):
         match(nextTok)
         rightTerm = term(varType)
         if(leftTerm[TYPE] == rightTerm[TYPE]):
-            finalTerm = ((leftTerm[VAL] - rightTerm[VAL]), varType)
+            finalTerm = ((leftTerm[VAL] - rightTerm[VAL]), leftTerm[TYPE])
             return finalTerm
         else:
             sys.exit('ERROR4')
@@ -137,7 +149,6 @@ def factor(varType):
             match(nextTok)
             exprCheck = expr(varType) 
             retTup = (exprCheck[VAL], varType)
-            print 'retTup:\t',retTup
     else:
         retTup = (nextTok, varType)
     lex()
@@ -190,7 +201,7 @@ def main():
     tokenList = file.read().split()
     lex()
     prog()
-    print variableDict
+
 
 if __name__=="__main__":
     main()

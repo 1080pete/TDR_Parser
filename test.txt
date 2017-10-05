@@ -1,1 +1,5 @@
-let x : int = 10 ; y : int = x + x ; z : real = 10 ; in real ( y + y * int ( z ) end ; 
+let x : int = 5 ;
+in
+    int ( x * x * x )
+end ; 
+
