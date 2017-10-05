@@ -104,7 +104,7 @@ def term(varType):
         match(nextTok)
         rightFact = factor(varType)
         if(leftFact[TYPE] == rightFact[TYPE]):
-            finalFact = ((leftFact[VAL] * rightFact[VAL]), varType)
+            finalFact = ((leftFact[VAL] * rightFact[VAL]), leftFact[TYPE])
             return finalFact
         else:
             sys.exit('ERROR5')
@@ -113,7 +113,7 @@ def term(varType):
         match(nextTok)
         rightFact = factor(varType)
         if(leftFact[TYPE] == rightFact[TYPE]):
-            finalFact = ((leftFact[VAL] / rightFact[VAL]), varType)
+            finalFact = ((leftFact[VAL] / rightFact[VAL]), leftFact[TYPE])
             return finalFact
         else:
             sys.exit('ERROR6')
