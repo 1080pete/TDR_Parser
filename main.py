@@ -93,7 +93,14 @@ def expr(varType):
     while(True):
         #CREATE A TOTAL AND A LEFT TERM
         #check to see if there is a rightTerm and compute
+        leftTerm = term(varType)
         if(nextTok=='+'):
+            '''
+            leftTup = (total, varType)
+            rightTup = term(varType)
+            total = arith(leftTup, nextTok, rightTup)
+            varType = leftTerm[TYPE]
+            '''
             match(nextTok)
             rightTerm = term(varType)
             if(leftTerm[TYPE] == rightTerm[TYPE]):
@@ -101,6 +108,7 @@ def expr(varType):
                 varType = leftTerm[TYPE]
             else:
                 sys.exit('ERROR3')
+            
         elif(nextTok=='-'):
             match(nextTok)
             rightTerm = term(varType)
@@ -109,10 +117,10 @@ def expr(varType):
                 varType = leftTerm[TYPE]
             else:
                 sys.exit('ERROR4')
-        else:
-            leftTerm = term(varType)
-            total = leftTerm[VAL]
+        
+        #FIX THIS
         if(nextTok == ')' or nextTok == ';'):
+            total += leftTerm[VAL]
             break
 
     finalTup = (total, varType)
@@ -208,6 +216,26 @@ def lex():
     index += 1
     nextTok = tokenList[index]
 
+def arith(left, tok, right):
+    if(left[TYPE] == right[TYPE]):
+        if(tok == '+'):
+            match(tok)
+            print left[VAL]
+            print right[VAL]
+            return (left[VAL] + right[VAL])
+        elif(tok == '-'):
+            match(tok)
+            return left - right
+        elif(tok == '*'):
+            match(tok)
+            return left - right
+        elif(tok == '/'):
+            match(tok)
+            return left / right
+        else:
+            sys.exit('ERROR arit')
+    else:
+        sys.exit('ERROR arith match')
 #initialze program
 def main():
     global tokenList
