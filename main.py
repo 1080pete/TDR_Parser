@@ -21,9 +21,11 @@ def let_in_end():
         if(nextTok=="let"):
             match(nextTok)
             dec_list()
+            print variableDict
         elif(nextTok=="in"):
             match(nextTok)
-            progTup = expr(type())
+            varType = type()
+            progTup = expr(varType)
             if(progTup[TYPE] == 'int'):
                 final = (int(progTup[VAL]), progTup[TYPE])
             elif(progTup[TYPE] == 'real'):
@@ -87,26 +89,34 @@ def type():
 
 def expr(varType):
     #initialize leftTerm
-    leftTerm = term(varType)
-    #check to see if there is a rightTerm and compute
-    if(nextTok=='+'):
-        match(nextTok)
-        rightTerm = term(varType)
-        if(leftTerm[TYPE] == rightTerm[TYPE]):
-            finalTerm = ((leftTerm[VAL] + rightTerm[VAL]), leftTerm[TYPE])
-            return finalTerm
+    total = None
+    while(True):
+        #CREATE A TOTAL AND A LEFT TERM
+        #check to see if there is a rightTerm and compute
+        if(nextTok=='+'):
+            match(nextTok)
+            rightTerm = term(varType)
+            if(leftTerm[TYPE] == rightTerm[TYPE]):
+                total += rightTerm[VAL]
+                varType = leftTerm[TYPE]
+            else:
+                sys.exit('ERROR3')
+        elif(nextTok=='-'):
+            match(nextTok)
+            rightTerm = term(varType)
+            if(leftTerm[TYPE] == rightTerm[TYPE]):
+                total -= rightTerm[VAL]
+                varType = leftTerm[TYPE]
+            else:
+                sys.exit('ERROR4')
         else:
-            sys.exit('ERROR3')
-    elif(nextTok=='-'):
-        match(nextTok)
-        rightTerm = term(varType)
-        if(leftTerm[TYPE] == rightTerm[TYPE]):
-            finalTerm = ((leftTerm[VAL] - rightTerm[VAL]), leftTerm[TYPE])
-            return finalTerm
-        else:
-            sys.exit('ERROR4')
+            leftTerm = term(varType)
+            total = leftTerm[VAL]
+        if(nextTok == ')' or nextTok == ';'):
+            break
 
-    return leftTerm
+    finalTup = (total, varType)
+    return finalTup
 
 def term(varType):
     #initialize leftFact
@@ -116,6 +126,7 @@ def term(varType):
         match(nextTok)
         rightFact = factor(varType)
         if(leftFact[TYPE] == rightFact[TYPE]):
+            print variableDict
             finalFact = ((leftFact[VAL] * rightFact[VAL]), leftFact[TYPE])
             return finalFact
         else:
@@ -142,6 +153,8 @@ def factor(varType):
         #this is causing problems with variable type
         exprCheck = expr(varType)
         retTup = (exprCheck[VAL], varType)
+        match(')')
+   
         
     elif(nextTok=='int' or nextTok=='real'):
         varType=type()
@@ -184,6 +197,7 @@ def match(token):
     if(token==nextTok):
         lex()
     else:
+        print token
         sys.exit('ERROR7')
          
 
