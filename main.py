@@ -26,7 +26,7 @@ def let_in_end():
             elif progTup[TYPE] == 'real':
                 final = (float(progTup[VAL]), progTup[TYPE])
             else:
-                sys.exit('ERROR1')
+                sys.exit('ERROR:\t WRONG VAL ASSIGNMENT')
             print final[VAL]
         else:
             lex()
@@ -41,8 +41,8 @@ def dec():
     varType, varVal = None, None
     varName = nextTok
 
-    lex()
     #read through declerations and insert them into variableDict with VAL and varType
+    lex()
     if nextTok == ':':
         match(nextTok)
         varType = type()
@@ -51,12 +51,13 @@ def dec():
             varVal = expr(varType)
             match(';')
         else:
-            sys.exit('ERROR')
+            sys.exit('ERROR:\tWRONG DECLERATION FORMAT')
     else:
-        sys.exit('ERROR')
+        sys.exit('ERROR:\tWRONG DECLERATION FORMAT')
 
     variableDict[varName] = (varVal[VAL], varType)
     return
+
 #type check method, return type if 'int' or 'real', return error ifelse
 def type():
     if nextTok == 'int' or nextTok == 'real':
@@ -64,11 +65,12 @@ def type():
         match(nextTok)
         return returnVal
     else:
-        sys.exit('ERROR2')
+        sys.exit('ERROR:\tWRONG TYPE')
 
 def expr(varType):
     leftTerm = term(varType)
     total = leftTerm[VAL]
+
     while(True):
         #CREATE A TOTAL AND A LEFT TERM
         #check to see if there is a rightTerm and compute    
@@ -87,7 +89,7 @@ def expr(varType):
         elif nextTok == ')' or nextTok == ';' or nextTok == 'end':
             break
         else:
-            sys.exit('ERROR')
+            sys.exit('ERROR:\tEXPRESION ERROR')
 
     finalTup = (total, varType)
     return finalTup
@@ -143,7 +145,7 @@ def match(token):
         lex()
     else:
         print token
-        sys.exit('ERROR7')
+        sys.exit('ERROR:\tMATCH ERROR')
 
 #update nextTok and index counter
 def lex():
@@ -167,9 +169,9 @@ def arith(left, operation, right):
             returnVal = left[VAL] / right[VAL]
             return returnVal
         else:
-            sys.exit('ERROR arith')
+            sys.exit('ERROR:\tINVALID OPERATION')
     else:
-        sys.exit('ERROR type')
+        sys.exit('ERROR:\tTYPE MATCH INVALID')
 
 def varDef(variable, varType): 
     varNum = 0
@@ -182,13 +184,13 @@ def varDef(variable, varType):
                 varNum = (int(variable), varType)
                 return varNum
             except(ValueError):
-                sys.exit('ERROR int')
+                sys.exit('ERROR:\tCANNOT CAST INT')
         elif varType == 'real':
             try:
                 varNum = (float(variable), varType)
                 return varNum
             except(ValueError):
-                sys.exit('ERROR float')
+                sys.exit('ERROR:\tCANNOT CAST FLOAT')
             
 #initialze program and read file into global list, lex() into nextTok and execute prog()
 def main():
