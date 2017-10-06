@@ -133,7 +133,7 @@ def term(varType):
                 sys.exit('ERROR6')
         else:
             break
-    finalFact = (total, varType)
+    finalFact = (total, leftFact[TYPE])
     return finalFact
 
 def factor(varType):
@@ -156,7 +156,7 @@ def factor(varType):
             match(nextTok)
             value = varDef(nextTok, varType)
             match(nextTok)
-            retTup = (value, varType)
+            retTup = (value[VAL], varType)
             match(')')
     else:
         '''old
@@ -221,13 +221,13 @@ def varDef(variable, varType):
     else:
         if varType == 'int':
             try:
-                varNum = int(variable)
+                varNum = (int(variable), varType)
                 return varNum
             except(ValueError):
                 sys.exit('ERROR int')
         elif varType == 'real':
             try:
-                varNum = float(variable)
+                varNum = (float(variable), varType)
                 return varNum
             except(ValueError):
                 sys.exit('ERROR float')
