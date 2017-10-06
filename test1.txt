@@ -1,0 +1,6 @@
+let x : int = 10 ; 
+    y : int = 5 + 2 ;
+    z : real = x  + y ;
+in
+    real ( x + y )
+end ; 

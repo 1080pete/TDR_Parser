@@ -17,17 +17,18 @@ def prog():
     let_in_end()
     
 def let_in_end():
-    while(index < len(tokenList) - 2):
-        if(nextTok=="let"):
+    while index < len(tokenList) - 2:
+        if nextTok == "let":
             match(nextTok)
             dec_list()
-        elif(nextTok=="in"):
+        elif nextTok == "in":
             match(nextTok)
             varType = type()
             progTup = expr(varType)
-            if(progTup[TYPE] == 'int'):
+
+            if progTup[TYPE] == 'int':
                 final = (int(progTup[VAL]), progTup[TYPE])
-            elif(progTup[TYPE] == 'real'):
+            elif progTup[TYPE] == 'real':
                 final = (float(progTup[VAL]), progTup[TYPE])
             else:
                 sys.exit('ERROR1')
@@ -36,37 +37,35 @@ def let_in_end():
             lex()
 
 def dec_list():
-    while(nextTok != 'in'):
+    while nextTok != 'in':
         dec()
     return
 
 #
 def dec():
     global variableDict
-    varType,varVal = None,None
+    varType, varVal = None, None
     varName = nextTok
 
     lex()
-
     #read through declerations and insert them into variableDict with VAL and varType
-    while(nextTok != ';'):
-        if(nextTok==':'):
-            match(nextTok)
-            varType = type()
-        elif(nextTok=='='):
+    if nextTok == ':':
+        match(nextTok)
+        varType = type()
+        if nextTok == '=':
             match(nextTok)
             varVal = expr(varType)
-
-
-    #Check to see if assigned type is cast right
+            match(';')
+        else:
+            sys.exit('ERROR')
+    else:
+        sys.exit('ERROR')
 
     variableDict[varName] = (varVal[VAL], varType)
-    lex() 
     return
-
-#type check method, return type if 'int' or 'real', return error ifelse 
+#type check method, return type if 'int' or 'real', return error ifelse
 def type():
-    if(nextTok == 'int' or nextTok == 'real'):
+    if nextTok == 'int' or nextTok == 'real':
         returnVal = nextTok
         match(nextTok)
         return returnVal
@@ -74,107 +73,76 @@ def type():
         sys.exit('ERROR2')
 
 def expr(varType):
-    
     leftTerm = term(varType)
     total = leftTerm[VAL]
     while(True):
         #CREATE A TOTAL AND A LEFT TERM
-        #check to see if there is a rightTerm and compute
-       
-        if(nextTok=='+'):
+        #check to see if there is a rightTerm and compute    
+        if nextTok == '+':
             match(nextTok)
             rightTerm = term(varType)
-            if(leftTerm[TYPE] == rightTerm[TYPE]):
-                total += rightTerm[VAL]
-                varType = leftTerm[TYPE]
-            else:
-                sys.exit('ERROR3')
-            
-        elif(nextTok=='-'):
+            leftNew = (total, leftTerm[TYPE])
+            total = arith(leftNew, '+', rightTerm)
+            varType = leftTerm[TYPE]
+        elif nextTok == '-':
             match(nextTok)
             rightTerm = term(varType)
-            if(leftTerm[TYPE] == rightTerm[TYPE]):
-                total -= rightTerm[VAL]
-                varType = leftTerm[TYPE]
-            else:
-                sys.exit('ERROR4')
-        
-        #FIX THIS
-        elif(nextTok == ')' or nextTok == ';' or nextTok == 'end'):
+            leftNew = (total, leftTerm[TYPE])
+            total = arith(leftNew, '-', rightTerm)
+            varType = leftTerm[TYPE]
+        elif nextTok == ')' or nextTok == ';' or nextTok == 'end':
             break
+        else:
+            sys.exit('ERROR')
 
     finalTup = (total, varType)
     return finalTup
 
 def term(varType):
-    
     leftFact = factor(varType)
     total = leftFact[VAL]
 
-    while(True):
-   
+    while True:
     #check to see if there is a rightFact and compute
-        if(nextTok=='*'):
+        if nextTok == '*':
             match(nextTok)
             rightFact = factor(varType)
-            if(leftFact[TYPE] == rightFact[TYPE]):
-                total *= rightFact[VAL] 
-                varType = rightFact[TYPE]
-            else:
-                sys.exit('ERROR5')
-
-        elif(nextTok=='/'):
+            leftNew = (total, leftFact[TYPE])
+            total = arith(leftNew, '*', rightFact)
+            varType = leftFact[TYPE]
+        elif nextTok == '/':
             match(nextTok)
             rightFact = factor(varType)
-            if(leftFact[TYPE] == rightFact[TYPE]):
-                total /= rightFact[VAL] 
-                varType = rightFact[TYPE]
-            else:
-                sys.exit('ERROR6')
+            leftNew = (total, leftFact[TYPE])
+            total = arith(leftNew, '/', rightFact)
+            varType = leftFact[TYPE]
         else:
             break
     finalFact = (total, leftFact[TYPE])
     return finalFact
 
 def factor(varType):
-    
-    #initialize retTup 
     retTup = ()
-
     #check to see if nextTok is paranthesis or variable type
-    if(nextTok=='('):
+    if nextTok == '(':
         match(nextTok)
         exprVal = expr(varType)
         retTup = (exprVal[VAL], varType)
         match(')')
-
-   
-        
-    elif(nextTok=='int' or nextTok=='real'):
+    elif nextTok == 'int' or nextTok == 'real':
         varType=type()
-        if(nextTok=='('):
+        if nextTok == '(':
             match(nextTok)
             value = varDef(nextTok, varType)
             match(nextTok)
             retTup = (value[VAL], varType)
             match(')')
     else:
-        '''old
-        value = varDef(nextTok, varType)
-        retTup = (value, varType)
-        '''
-        #NEW
         value = varDef(nextTok, varType)
         retTup = value
         lex()
-    
-
-    #if factor has a stored value, convert value and return value and varType
-  
-    
-    #New:
-    
     return retTup
+
 #match to see if nextTok is correct, if not print error
 def match(token):
     if(token==nextTok):
@@ -182,38 +150,34 @@ def match(token):
     else:
         print token
         sys.exit('ERROR7')
-         
 
 #update nextTok and index counter
 def lex():
     global index, nextTok
-
     index += 1
     nextTok = tokenList[index]
 
-def arith(left, tok, right):
-    if(left[TYPE] == right[TYPE]):
-        if(tok == '+'):
-            match(tok)
-            print left[VAL]
-            print right[VAL]
-            return (left[VAL] + right[VAL])
-        elif(tok == '-'):
-            match(tok)
-            return left - right
-        elif(tok == '*'):
-            match(tok)
-            return left - right
-        elif(tok == '/'):
-            match(tok)
-            return left / right
+def arith(left, operation, right):
+    returnVal = 0
+    if left[TYPE] == right[TYPE]:
+        if operation == '+':
+            returnVal = left[VAL] + right[VAL]
+            return returnVal
+        elif operation == '-':
+            returnVal = left[VAL] - right[VAL]
+            return returnVal
+        elif operation == '*':
+            returnVal = left[VAL] * right[VAL]
+            return returnVal
+        elif operation == '/':
+            returnVal = left[VAL] / right[VAL]
+            return returnVal
         else:
-            sys.exit('ERROR arit')
+            sys.exit('ERROR arith')
     else:
-        sys.exit('ERROR arith match')
+        sys.exit('ERROR type')
 
-def varDef(variable, varType):
-    
+def varDef(variable, varType): 
     varNum = 0
     if variable in variableDict:
         varNum = variableDict[variable]
@@ -232,14 +196,13 @@ def varDef(variable, varType):
             except(ValueError):
                 sys.exit('ERROR float')
             
-#initialze program
+#initialze program and read file into global list, lex() into nextTok and execute prog()
 def main():
     global tokenList
     file = open('test1.txt','r')
     tokenList = file.read().split()
     lex()
     prog()
-
 
 if __name__=="__main__":
     main()
