@@ -4,14 +4,15 @@ In this project you are asked to write an interpreter which uses the top-down re
 and inherited/synthesized attributes to parse and evaluate a very simple programming language. The tiny
 strong-typed language's grammar is given below.
 
-<Prog> := <1et-in-end> { <1et-in-end> }
-<1et-in-end> = let <decl-list> in <type> ( <expr> ) end ;
-<decl-list> = <decl> { <decl> }
-<decl> = id <type> = <expr> ;
-<type> = int | real
+<Prog> := <1et-in-end> { <let-in-end> } 
+<1et-in-end> = let <decl-list> in <type> ( <expr> ) end ; 
+<decl-list> = <decl> { <decl> }  
+<decl> = id <type> = <expr> ;  
+<type> = int | real  
 <expr> = <term> { + <term> | - <term> }
 <term> = <factor> { * <factor> | / <factor> }
 <factor> = ( <expr> ) | id | number | <type>(id)
+
 
 The interpreter should be written in Python. It takes one input file which contains the program to be executed.
 The input file name is given from the command line. For example,
