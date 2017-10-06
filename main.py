@@ -159,8 +159,13 @@ def factor(varType):
             retTup = (value, varType)
             match(')')
     else:
+        '''old
         value = varDef(nextTok, varType)
         retTup = (value, varType)
+        '''
+        #NEW
+        value = varDef(nextTok, varType)
+        retTup = value
         lex()
     
 
@@ -208,9 +213,10 @@ def arith(left, tok, right):
         sys.exit('ERROR arith match')
 
 def varDef(variable, varType):
+    
     varNum = 0
     if variable in variableDict:
-        varNum = variableDict[variable][VAL]
+        varNum = variableDict[variable]
         return varNum
     else:
         if varType == 'int':
@@ -229,7 +235,7 @@ def varDef(variable, varType):
 #initialze program
 def main():
     global tokenList
-    file = open('test2.txt','r')
+    file = open('test1.txt','r')
     tokenList = file.read().split()
     lex()
     prog()
