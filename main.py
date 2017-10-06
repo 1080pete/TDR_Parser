@@ -21,11 +21,12 @@ def let_in_end():
         if(nextTok=="let"):
             match(nextTok)
             dec_list()
-            print variableDict
         elif(nextTok=="in"):
             match(nextTok)
             varType = type()
             progTup = expr(varType)
+            match(nextTok)
+            lex()
             if(progTup[TYPE] == 'int'):
                 final = (int(progTup[VAL]), progTup[TYPE])
             elif(progTup[TYPE] == 'real'):
@@ -67,7 +68,7 @@ def dec():
 
 #type check method, return type if 'int' or 'real', return error ifelse 
 def type():
-    if(nextTok == 'int' or 'real'):
+    if(nextTok == 'int' or nextTok == 'real'):
         returnVal = nextTok
         match(nextTok)
         return returnVal
@@ -75,19 +76,14 @@ def type():
         sys.exit('ERROR2')
 
 def expr(varType):
-    #initialize leftTerm
-    total = 0
+    
+    leftTerm = term(varType)
+    total = leftTerm[VAL]
     while(True):
         #CREATE A TOTAL AND A LEFT TERM
         #check to see if there is a rightTerm and compute
-        leftTerm = term(varType)
+       
         if(nextTok=='+'):
-            '''
-            leftTup = (total, varType)
-            rightTup = term(varType)
-            total = arith(leftTup, nextTok, rightTup)
-            varType = leftTerm[TYPE]
-            '''
             match(nextTok)
             rightTerm = term(varType)
             if(leftTerm[TYPE] == rightTerm[TYPE]):
@@ -106,26 +102,26 @@ def expr(varType):
                 sys.exit('ERROR4')
         
         #FIX THIS
-        if(nextTok == ')' or nextTok == ';'):
-            total += leftTerm[VAL]
+        elif(nextTok == ')' or nextTok == ';' or nextTok == 'end'):
             break
 
     finalTup = (total, varType)
     return finalTup
 
 def term(varType):
-    total = 0
-    while(True):
-    #initialize leftFact
     
+    leftFact = factor(varType)
+    total = leftFact[VAL]
+
+    while(True):
+   
     #check to see if there is a rightFact and compute
         if(nextTok=='*'):
             match(nextTok)
             rightFact = factor(varType)
             if(leftFact[TYPE] == rightFact[TYPE]):
-                print variableDict
-                finalFact = ((leftFact[VAL] * rightFact[VAL]), leftFact[TYPE])
-                return finalFact
+                total *= rightFact[VAL] 
+                varType = rightFact[TYPE]
             else:
                 sys.exit('ERROR5')
 
@@ -133,15 +129,14 @@ def term(varType):
             match(nextTok)
             rightFact = factor(varType)
             if(leftFact[TYPE] == rightFact[TYPE]):
-                finalFact = ((leftFact[VAL] / rightFact[VAL]), leftFact[TYPE])
-                return finalFact
+                total /= rightFact[VAL] 
+                varType = rightFact[TYPE]
             else:
                 sys.exit('ERROR6')
-        elif(nextTok == ')' or nextTok == ';'):
-            return total
         else:
-            leftFact = factor(varType)
-        return leftFact
+            break
+    finalFact = (total, varType)
+    return finalFact
 
 def factor(varType):
     
@@ -151,10 +146,10 @@ def factor(varType):
     #check to see if nextTok is paranthesis or variable type
     if(nextTok=='('):
         match(nextTok)
-        #this is causing problems with variable type
         exprVal = expr(varType)
         retTup = (exprVal[VAL], varType)
         match(')')
+
    
         
     elif(nextTok=='int' or nextTok=='real'):
@@ -162,11 +157,14 @@ def factor(varType):
         if(nextTok=='('):
             match(nextTok)
             value = varDef(nextTok, varType)
+            match(nextTok)
             retTup = (value, varType)
+            match(')')
     else:
         value = varDef(nextTok, varType)
         retTup = (value, varType)
-    lex()
+        lex()
+    
 
     #if factor has a stored value, convert value and return value and varType
   
