@@ -25,8 +25,6 @@ def let_in_end():
             match(nextTok)
             varType = type()
             progTup = expr(varType)
-            match(nextTok)
-            lex()
             if(progTup[TYPE] == 'int'):
                 final = (int(progTup[VAL]), progTup[TYPE])
             elif(progTup[TYPE] == 'real'):
@@ -231,7 +229,7 @@ def varDef(variable, varType):
 #initialze program
 def main():
     global tokenList
-    file = open('test.txt','r')
+    file = open('test2.txt','r')
     tokenList = file.read().split()
     lex()
     prog()
