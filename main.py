@@ -1,5 +1,3 @@
-#check to see if assigned value to variable is the correct
-
 import sys
 import pdb
 
@@ -7,11 +5,8 @@ tokenList = []
 variableDict = {}
 nextTok = None
 index = -1
-#swap these two below
-#edit: swapped
 VAL = 0
 TYPE = 1
-
 
 def prog():
     let_in_end()
@@ -41,7 +36,6 @@ def dec_list():
         dec()
     return
 
-#
 def dec():
     global variableDict
     varType, varVal = None, None
