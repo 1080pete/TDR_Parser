@@ -60,20 +60,7 @@ def dec():
 
 
     #Check to see if assigned type is cast right
-    '''
-    if(varType == 'int'):
-        if(isinstance(int(varVal, int) == True):
-            variableDict[varName] = (varVal[VAL], varType)
-        else:
-            sys.exit('ERROR INT')
-    elif(varType == 'real'):
-        if(isinstance(varType,float) == True):
-            variableDict[varName] = (varVal[VAL], varType)
-        else:
-            sys.exit('ERROR REAL')
-    '''
-  
-   
+
     variableDict[varName] = (varVal[VAL], varType)
     lex() 
     return
@@ -89,7 +76,7 @@ def type():
 
 def expr(varType):
     #initialize leftTerm
-    total = None
+    total = 0
     while(True):
         #CREATE A TOTAL AND A LEFT TERM
         #check to see if there is a rightTerm and compute
@@ -127,28 +114,34 @@ def expr(varType):
     return finalTup
 
 def term(varType):
+    total = 0
+    while(True):
     #initialize leftFact
-    leftFact = factor(varType)
+    
     #check to see if there is a rightFact and compute
-    if(nextTok=='*'):
-        match(nextTok)
-        rightFact = factor(varType)
-        if(leftFact[TYPE] == rightFact[TYPE]):
-            print variableDict
-            finalFact = ((leftFact[VAL] * rightFact[VAL]), leftFact[TYPE])
-            return finalFact
-        else:
-            sys.exit('ERROR5')
+        if(nextTok=='*'):
+            match(nextTok)
+            rightFact = factor(varType)
+            if(leftFact[TYPE] == rightFact[TYPE]):
+                print variableDict
+                finalFact = ((leftFact[VAL] * rightFact[VAL]), leftFact[TYPE])
+                return finalFact
+            else:
+                sys.exit('ERROR5')
 
-    elif(nextTok=='/'):
-        match(nextTok)
-        rightFact = factor(varType)
-        if(leftFact[TYPE] == rightFact[TYPE]):
-            finalFact = ((leftFact[VAL] / rightFact[VAL]), leftFact[TYPE])
-            return finalFact
+        elif(nextTok=='/'):
+            match(nextTok)
+            rightFact = factor(varType)
+            if(leftFact[TYPE] == rightFact[TYPE]):
+                finalFact = ((leftFact[VAL] / rightFact[VAL]), leftFact[TYPE])
+                return finalFact
+            else:
+                sys.exit('ERROR6')
+        elif(nextTok == ')' or nextTok == ';'):
+            return total
         else:
-            sys.exit('ERROR6')
-    return leftFact
+            leftFact = factor(varType)
+        return leftFact
 
 def factor(varType):
     
@@ -159,8 +152,8 @@ def factor(varType):
     if(nextTok=='('):
         match(nextTok)
         #this is causing problems with variable type
-        exprCheck = expr(varType)
-        retTup = (exprCheck[VAL], varType)
+        exprVal = expr(varType)
+        retTup = (exprVal[VAL], varType)
         match(')')
    
         
@@ -168,36 +161,17 @@ def factor(varType):
         varType=type()
         if(nextTok=='('):
             match(nextTok)
-            exprCheck = expr(varType) 
-            retTup = (exprCheck[VAL], varType)
+            value = varDef(nextTok, varType)
+            retTup = (value, varType)
     else:
-        retTup = (nextTok, varType)
+        value = varDef(nextTok, varType)
+        retTup = (value, varType)
     lex()
 
     #if factor has a stored value, convert value and return value and varType
-    '''old:
-    if(retTup[TYPE]=='int'):
-        if(retTup[VAL] in variableDict):
-            finalTup = (varType, int(variableDict[retTup[VAL]][VAL]))
-            print finalTup
-            return finalTup
-    elif(retTup[TYPE]=='real'):
-        if(retTup[VAL] in variableDict):
-            finalTup = (varType, float(variableDict[retTup[VAL]][VAL]))
-            return finalTup
-
-    return retTup
-    '''
+  
     
     #New:
-    if(retTup[VAL] in variableDict):    
-        if(retTup[TYPE]=='int'):
-            #Fix this
-            finalTup = (int(variableDict[retTup[VAL]][VAL]), variableDict[retTup[VAL]][TYPE])
-            return finalTup
-        elif(retTup[TYPE]=='real'):
-            finalTup = (float(variableDict[retTup[VAL]][VAL]), variableDict[retTup[VAL]][TYPE])
-            return finalTup
     
     return retTup
 #match to see if nextTok is correct, if not print error
@@ -236,6 +210,26 @@ def arith(left, tok, right):
             sys.exit('ERROR arit')
     else:
         sys.exit('ERROR arith match')
+
+def varDef(variable, varType):
+    varNum = 0
+    if variable in variableDict:
+        varNum = variableDict[variable][VAL]
+        return varNum
+    else:
+        if varType == 'int':
+            try:
+                varNum = int(variable)
+                return varNum
+            except(ValueError):
+                sys.exit('ERROR int')
+        elif varType == 'real':
+            try:
+                varNum = float(variable)
+                return varNum
+            except(ValueError):
+                sys.exit('ERROR float')
+            
 #initialze program
 def main():
     global tokenList
