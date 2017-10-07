@@ -187,7 +187,7 @@ def varDef(variable, varType):
 #initialze program and read file into global list, lex() into nextTok and execute prog()
 def main():
     global tokenList
-    file = open('test2.txt','r')
+    file = open('test1.txt','r')
     tokenList = file.read().split()
     lex()
     prog()
