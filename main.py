@@ -10,7 +10,8 @@ TYPE = 1
 
 def prog():
     let_in_end()
-    
+
+#DEC CHANGED TO LIST
 def let_in_end():
     while index < len(tokenList) - 2:
         if nextTok == "let":
@@ -19,12 +20,12 @@ def let_in_end():
         elif nextTok == "in":
             match(nextTok)
             varType = type()
-            progTup = expr(varType)
+            progList = expr(varType)
 
-            if progTup[TYPE] == 'int':
-                final = (int(progTup[VAL]), progTup[TYPE])
-            elif progTup[TYPE] == 'real':
-                final = (float(progTup[VAL]), progTup[TYPE])
+            if progList[TYPE] == 'int':
+                final = (int(progList[VAL]), progList[TYPE])
+            elif progList[TYPE] == 'real':
+                final = (float(progList[VAL]), progList[TYPE])
             else:
                 sys.exit('ERROR:\t WRONG VAL ASSIGNMENT')
             print final[VAL]
@@ -36,6 +37,7 @@ def dec_list():
         dec()
     return
 
+#DEC FINE
 def dec():
     global variableDict
     varType, varVal = None, None
@@ -67,9 +69,9 @@ def type():
     else:
         sys.exit('ERROR:\tWRONG TYPE')
 
+#EXPR DONE
 def expr(varType):
     leftTerm = term(varType)
-    total = leftTerm[VAL]
 
     while(True):
         #CREATE A TOTAL AND A LEFT TERM
@@ -77,53 +79,44 @@ def expr(varType):
         if nextTok == '+':
             match(nextTok)
             rightTerm = term(varType)
-            leftNew = (total, leftTerm[TYPE])
-            total = arith(leftNew, '+', rightTerm)
-            varType = leftTerm[TYPE]
+            leftTerm = arith(leftTerm, '+', rightTerm)
         elif nextTok == '-':
             match(nextTok)
             rightTerm = term(varType)
-            leftNew = (total, leftTerm[TYPE])
-            total = arith(leftNew, '-', rightTerm)
-            varType = leftTerm[TYPE]
+            leftTerm = arith(leftTerm, '-', rightTerm)
         elif nextTok == ')' or nextTok == ';' or nextTok == 'end':
             break
         else:
             sys.exit('ERROR:\tEXPRESION ERROR')
 
-    finalTup = (total, varType)
-    return finalTup
+    return leftTerm
 
+#TERM DONE
 def term(varType):
     leftFact = factor(varType)
-    total = leftFact[VAL]
 
     while True:
     #check to see if there is a rightFact and compute
         if nextTok == '*':
             match(nextTok)
             rightFact = factor(varType)
-            leftNew = (total, leftFact[TYPE])
-            total = arith(leftNew, '*', rightFact)
-            varType = leftFact[TYPE]
+            leftFact = arith(leftFact, '*', rightFact)
         elif nextTok == '/':
             match(nextTok)
             rightFact = factor(varType)
-            leftNew = (total, leftFact[TYPE])
-            total = arith(leftNew, '/', rightFact)
-            varType = leftFact[TYPE]
+            leftFact = arith(leftFact, '/', rightFact)
         else:
             break
-    finalFact = (total, leftFact[TYPE])
-    return finalFact
+    return leftFact
 
+#FACTOR DONE
 def factor(varType):
-    retTup = ()
+    retList = []
     #check to see if nextTok is paranthesis or variable type
     if nextTok == '(':
         match(nextTok)
         exprVal = expr(varType)
-        retTup = (exprVal[VAL], varType)
+        retList = [exprVal[VAL], varType]
         match(')')
     elif nextTok == 'int' or nextTok == 'real':
         varType=type()
@@ -131,20 +124,18 @@ def factor(varType):
             match(nextTok)
             value = varDef(nextTok, varType)
             match(nextTok)
-            retTup = (value[VAL], varType)
+            retList = [value[VAL], varType]
             match(')')
     else:
-        value = varDef(nextTok, varType)
-        retTup = value
+        retList = varDef(nextTok, varType)
         lex()
-    return retTup
+    return retList
 
 #match to see if nextTok is correct, if not print error
 def match(token):
     if(token==nextTok):
         lex()
     else:
-        print token
         sys.exit('ERROR:\tMATCH ERROR')
 
 #update nextTok and index counter
@@ -153,49 +144,50 @@ def lex():
     index += 1
     nextTok = tokenList[index]
 
+#ARITH DONE
 def arith(left, operation, right):
-    returnVal = 0
+    rightNum = right[VAL]
+
     if left[TYPE] == right[TYPE]:
         if operation == '+':
-            returnVal = left[VAL] + right[VAL]
-            return returnVal
+            left[VAL] += rightNum
+            return left
         elif operation == '-':
-            returnVal = left[VAL] - right[VAL]
-            return returnVal
+            left[VAL] -= rightNum
+            return left
         elif operation == '*':
-            returnVal = left[VAL] * right[VAL]
-            return returnVal
+            left[VAL] *= rightNum
+            return left
         elif operation == '/':
-            returnVal = left[VAL] / right[VAL]
-            return returnVal
+            left[VAL] /= rightNum
+            return left
         else:
             sys.exit('ERROR:\tINVALID OPERATION')
     else:
         sys.exit('ERROR:\tTYPE MATCH INVALID')
 
+
 def varDef(variable, varType): 
-    varNum = 0
     if variable in variableDict:
-        varNum = variableDict[variable]
-        return varNum
+        varList = list(variableDict[variable])
+        return varList
     else:
         if varType == 'int':
             try:
-                varNum = (int(variable), varType)
-                return varNum
+                varList = [int(variable), varType]
+                return varList
             except(ValueError):
                 sys.exit('ERROR:\tCANNOT CAST INT')
         elif varType == 'real':
             try:
-                varNum = (float(variable), varType)
-                return varNum
+                varList = [float(variable), varType]
+                return varList
             except(ValueError):
                 sys.exit('ERROR:\tCANNOT CAST FLOAT')
-            
 #initialze program and read file into global list, lex() into nextTok and execute prog()
 def main():
     global tokenList
-    file = open('test1.txt','r')
+    file = open('test2.txt','r')
     tokenList = file.read().split()
     lex()
     prog()
