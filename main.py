@@ -1,6 +1,6 @@
 import sys
-import pdb
 
+#decllare global varialbes
 tokenList = []
 variableDict = {}
 nextTok = None
@@ -9,10 +9,12 @@ VAL = 0
 TYPE = 1
 
 def prog():
+    #call let_in_end()
     let_in_end()
 
-#DEC CHANGED TO LIST
+
 def let_in_end():
+    #loop through tokenList until last token is read
     while index < len(tokenList) - 2:
         if nextTok == "let":
             match(nextTok)
@@ -33,6 +35,7 @@ def let_in_end():
             lex()
 
 def dec_list():
+    #read in variables
     while nextTok != 'in':
         dec()
     return
@@ -69,12 +72,12 @@ def type():
     else:
         sys.exit('ERROR:\tWRONG TYPE')
 
-#EXPR DONE
+
 def expr(varType):
+    #initialize left term
     leftTerm = term(varType)
 
-    while(True):
-        #CREATE A TOTAL AND A LEFT TERM
+    while True:
         #check to see if there is a rightTerm and compute    
         if nextTok == '+':
             match(nextTok)
@@ -91,7 +94,7 @@ def expr(varType):
 
     return leftTerm
 
-#TERM DONE
+
 def term(varType):
     leftFact = factor(varType)
 
@@ -109,17 +112,16 @@ def term(varType):
             break
     return leftFact
 
-#FACTOR DONE
 def factor(varType):
     retList = []
-    #check to see if nextTok is paranthesis or variable type
+    #check to see if nextTok is paranthesis or variable type, else return value
     if nextTok == '(':
         match(nextTok)
         exprVal = expr(varType)
         retList = [exprVal[VAL], varType]
         match(')')
     elif nextTok == 'int' or nextTok == 'real':
-        varType=type()
+        varType = type()
         if nextTok == '(':
             match(nextTok)
             value = varDef(nextTok, varType)
@@ -133,7 +135,7 @@ def factor(varType):
 
 #match to see if nextTok is correct, if not print error
 def match(token):
-    if(token==nextTok):
+    if token == nextTok:
         lex()
     else:
         sys.exit('ERROR:\tMATCH ERROR')
@@ -144,7 +146,7 @@ def lex():
     index += 1
     nextTok = tokenList[index]
 
-#ARITH DONE
+#Compute arithmetic equations
 def arith(left, operation, right):
     rightNum = right[VAL]
 
@@ -167,7 +169,9 @@ def arith(left, operation, right):
         sys.exit('ERROR:\tTYPE MATCH INVALID')
 
 
-def varDef(variable, varType): 
+def varDef(variable, varType):
+    #Check to see if variable is in variableDict and return value and type,
+    #if not return token value and type
     if variable in variableDict:
         varList = list(variableDict[variable])
         return varList
@@ -176,21 +180,22 @@ def varDef(variable, varType):
             try:
                 varList = [int(variable), varType]
                 return varList
-            except(ValueError):
+            except ValueError:
                 sys.exit('ERROR:\tCANNOT CAST INT')
         elif varType == 'real':
             try:
                 varList = [float(variable), varType]
                 return varList
-            except(ValueError):
+            except ValueError:
                 sys.exit('ERROR:\tCANNOT CAST FLOAT')
+
 #initialze program and read file into global list, lex() into nextTok and execute prog()
 def main():
     global tokenList
-    file = open('test1.txt','r')
+    file = open('test1.txt', 'r')
     tokenList = file.read().split()
     lex()
     prog()
 
-if __name__=="__main__":
+if __name__ == "__main__":
     main()
