@@ -9,10 +9,11 @@ VAL = 0
 TYPE = 1
 
 def prog():
-    #call let_in_end()
-    let_in_end()
+    while index <  len(tokenList) - 2:
+        let_in_end()
 
-
+'''
+#old
 def let_in_end():
     #loop through tokenList until last token is read
     while index < len(tokenList) - 2:
@@ -33,6 +34,22 @@ def let_in_end():
             print final[VAL]
         else:
             lex()
+'''
+#new
+def let_in_end():
+    match('let')
+    dec_list()
+    match('in')
+    varType = type()
+    progList = expr(varType)
+    match('end')
+    if nextTok == ';':
+        match(';')
+        print progList[VAL]
+        return
+    else:
+        sys.exit('ERROR')
+
 
 def dec_list():
     #read in variables
@@ -144,7 +161,10 @@ def match(token):
 def lex():
     global index, nextTok
     index += 1
-    nextTok = tokenList[index]
+    if index <= len(tokenList) - 1:
+        nextTok = tokenList[index]
+    else:
+        nextTok = 'none'
 
 #Compute arithmetic equations
 def arith(left, operation, right):
@@ -192,7 +212,7 @@ def varDef(variable, varType):
 #initialze program and read file into global list, lex() into nextTok and execute prog()
 def main():
     global tokenList
-    file = open('test1.txt', 'r')
+    file = open('test.txt', 'r')
     tokenList = file.read().split()
     lex()
     prog()
