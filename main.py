@@ -9,8 +9,16 @@ VAL = 0
 TYPE = 1
 
 def prog():
+    global variableDict
+
     while index <  len(tokenList) - 2:
         let_in_end()
+        variableDict.clear()
+
+    if nextTok == 'none':
+        return
+    else:
+        sys.exit('PROG ERROR')
 
 '''
 #old
